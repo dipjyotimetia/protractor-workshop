@@ -11,7 +11,7 @@ npm install
 ```
 2. Run a selenium server
 ```
-start-webdriver
+npm run start-webdriver
 ```
 3. Run the application
 ```
