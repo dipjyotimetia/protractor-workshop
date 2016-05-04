@@ -11,11 +11,11 @@ npm install
 ```
 2. Run a selenium server
 ```
-node_modules/protractor/bin/webdriver-manager start
+start-webdriver
 ```
 3. Run the application
 ```
-grunt
+grunt serve
 ```
 
 

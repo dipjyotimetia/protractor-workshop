@@ -32,26 +32,6 @@ module.exports = function (grunt) {
                 '<%=config.paths.src%>/js/templates.js'
             ]
         },
-        jshint: {
-            options: {
-                jshintrc: '<%=config.paths.config%>/.jshintrc',
-                reporter: require('jshint-junit-reporter'),
-                reporterOutput: '<%=config.paths.results%>/jshint/jshint.xml'
-            },
-            files: {
-                src: ['<%=config.paths.src%>/**/*.js',
-                    '!<%=config.paths.src%>/**/templates.js']
-            }
-        },
-        karma: {
-            options: {
-                singleRun: true,
-                reporters: ['progress', 'coverage', 'junit']
-            },
-            unit: {
-                configFile: '<%=config.paths.config%>/karma.conf.js'
-            }
-        },
         less: {
             development: {
                 options: {
@@ -117,13 +97,6 @@ module.exports = function (grunt) {
                 }
             }
         },
-        instrument: {
-            files: '<%=config.paths.src%>/**/*.js',
-            options: {
-                basePath: '<%=config.paths.instrumented%>',
-                lazy: false
-            }
-        },
         portPick: {
             options: {
                 port: 9000
@@ -185,67 +158,52 @@ module.exports = function (grunt) {
                 }
             }
         },
-        protractor_coverage: {
+        protractor: {
             options: {
                 configFile: 'config/protractor-local.conf.js',
                 keepAlive: true,
                 noColor: false,
                 debug: false,
-                coverageDir: '<%=config.paths.results%>/protractor-coverage',
-                args: {
-                    baseUrl: 'http://<%= config.hosts.runtime %>:<%= connect.test.options.port %>',
-                    resultsDir: '<%=config.paths.results%>/protractor',
-                    specs: ['<%=config.paths.test%>/protractor/**/*Spec.js']
+            },
+            all: {
+                options: {
+                    args: {
+                        baseUrl: 'http://<%= config.hosts.runtime %>:<%= connect.test.options.port %>',
+                        specs: ['<%=config.paths.test%>/protractor/*Spec.js']
+                    }
                 }
             },
             locators: {
                 options: {
-
-                    coverageDir: '<%=config.paths.results%>/protractor-coverage',
                     args: {
                         baseUrl: 'http://<%= config.hosts.runtime %>:<%= connect.test.options.port %>',
-                        resultsDir: '<%=config.paths.results%>/protractor',
-                        specs: ['<%=config.paths.test%>/protractor/promise*Spec.js']
+                        specs: ['<%=config.paths.test%>/protractor/locator*Spec.js']
                     }
                 }
             },
             interactions: {
                 options: {
-                    coverageDir: '<%=config.paths.results%>/protractor-coverage',
                     args: {
                         baseUrl: 'http://<%= config.hosts.runtime %>:<%= connect.test.options.port %>',
-                        resultsDir: '<%=config.paths.results%>/protractor',
                         specs: ['<%=config.paths.test%>/protractor/interaction*Spec.js']
                     }
                 }
             },
             chaining: {
                 options: {
-                    coverageDir: '<%=config.paths.results%>/protractor-coverage',
                     args: {
                         baseUrl: 'http://<%= config.hosts.runtime %>:<%= connect.test.options.port %>',
-                        resultsDir: '<%=config.paths.results%>/protractor',
                         specs: ['<%=config.paths.test%>/protractor/chain*Spec.js']
                     }
                 }
             },
             promises: {
                 options: {
-                    coverageDir: '<%=config.paths.results%>/protractor-coverage',
                     args: {
                         baseUrl: 'http://<%= config.hosts.runtime %>:<%= connect.test.options.port %>',
-                        resultsDir: '<%=config.paths.results%>/protractor',
                         specs: ['<%=config.paths.test%>/protractor/promise*Spec.js']
                     }
                 }
-            }
-        },
-        makeReport: {
-            src: '<%=config.paths.results%>/protractor-coverage/*.json',
-            options: {
-                type: 'lcov',
-                dir: '<%=config.paths.results%>/protractor-coverage',
-                print: 'detail'
             }
         },
         watch: {
@@ -360,18 +318,14 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('test', 'Execute tests.', function (suite) {
-        var coverageTask = 'protractor_coverage';
+        var protrator_run = 'protractor';
         if (typeof suite === 'string' && suite !== 'undefined') {
-            coverageTask += ':' + suite;
+            protrator_run += ':' + suite;
         }
         grunt.task.run([
             'force:on',
-            'jshint',
-            'karma',
-            'instrument',
             'connect:test',
-            coverageTask,
-            'makeReport',
+            protrator_run,
             'force:reset'
         ]);
     });
@@ -384,16 +338,11 @@ module.exports = function (grunt) {
         'usemin'
     ]);
 
-    grunt.registerTask('release', 'Release if compliant to all checks.', function () {
-        grunt.log.subhead('Not applicable yet build');
-    });
 
     grunt.registerTask('default', 'Default task', function (suite) {
         grunt.task.run([
             'prepare',
-            'test:' + suite,
-            'package',
-            'release'
+            'test:' + suite
         ]);
     });
 };
