@@ -45,7 +45,7 @@ describe("Chain exercises", function () {
             // see: http://angular.github.io/protractor/#/api?view=ElementArrayFinder
 
             var el;  /* implement me */
-            expect(el.getText()).toBe('2.1.0');
+            expect(el.getText()).toBe('2.0.0');
         });
 
         it('should get the initial release of protractor', function () {
