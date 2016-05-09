@@ -204,6 +204,14 @@ module.exports = function (grunt) {
                         specs: ['<%=config.paths.test%>/protractor/promise*Spec.js']
                     }
                 }
+            },
+            pageObject: {
+                options: {
+                    args: {
+                        baseUrl: 'http://<%= config.hosts.runtime %>:<%= connect.test.options.port %>',
+                        specs: ['<%=config.paths.test%>/protractor/afterMeSpec.js']
+                    }
+                }
             }
         },
         watch: {
